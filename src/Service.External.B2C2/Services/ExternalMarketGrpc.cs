@@ -38,18 +38,10 @@ namespace Service.External.B2C2.Services
             return Task.FromResult(new GetNameResult {Name = B2C2Const.Name});
         }
 
-        public async Task<GetBalancesResponse> GetBalancesAsync()
+        public Task<GetBalancesResponse> GetBalancesAsync()
         {
-            try
-            {
-                var balance = await _balanceCache.GetBalancesAsync();
-                return balance;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Cannot get Bitgo balance");
-                throw;
-            }
+            var list = _balanceCache.GetBalances();
+            return Task.FromResult(new GetBalancesResponse {Balances = list});
         }
 
         public Task<GetMarketInfoResponse> GetMarketInfoAsync(MarketRequest request)

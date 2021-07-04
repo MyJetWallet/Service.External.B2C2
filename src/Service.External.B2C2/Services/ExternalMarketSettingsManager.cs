@@ -10,6 +10,8 @@ using Service.External.B2C2.Domain.Models.Settings;
 using Service.External.B2C2.Domain.NoSql;
 using Service.External.B2C2.Domain.Settings;
 
+// ReSharper disable InconsistentLogPropertyNaming
+
 namespace Service.External.B2C2.Services
 {
     public class ExternalMarketSettingsManager : IExternalMarketSettingsAccessor, IExternalMarketSettingsManager
@@ -22,7 +24,6 @@ namespace Service.External.B2C2.Services
         private Dictionary<string, ExternalMarketSettings> _externalMarketSettings = new();
 
         private readonly object _sync = new();
-        private readonly string _system = Program.Settings.Name;
 
         public ExternalMarketSettingsManager(ILogger<ExternalMarketSettingsManager> logger,
             IMyNoSqlServerDataWriter<ExternalMarketSettingsNoSql> writer)
@@ -58,7 +59,7 @@ namespace Service.External.B2C2.Services
             {
                 ValidateSettings(settings);
 
-                var entity = ExternalMarketSettingsNoSql.Create(_system, settings);
+                var entity = ExternalMarketSettingsNoSql.Create(B2C2Const.Name, settings);
 
                 var exist = await _writer.GetAsync(entity.PartitionKey, entity.RowKey);
 
@@ -100,7 +101,7 @@ namespace Service.External.B2C2.Services
             {
                 ValidateSettings(settings);
 
-                var entity = ExternalMarketSettingsNoSql.Create(_system, settings);
+                var entity = ExternalMarketSettingsNoSql.Create(B2C2Const.Name, settings);
 
                 await _writer.InsertOrReplaceAsync(entity);
 
@@ -130,7 +131,7 @@ namespace Service.External.B2C2.Services
 
             try
             {
-                var entity = await _writer.DeleteAsync(ExternalMarketSettingsNoSql.GeneratePartitionKey(_system),
+                var entity = await _writer.DeleteAsync(ExternalMarketSettingsNoSql.GeneratePartitionKey(B2C2Const.Name),
                     ExternalMarketSettingsNoSql.GenerateRowKey(symbol));
 
                 if (entity != null)
@@ -150,7 +151,7 @@ namespace Service.External.B2C2.Services
 
         private async Task ReloadSettings()
         {
-            var markets = (await _writer.GetAsync(ExternalMarketSettingsNoSql.GeneratePartitionKey(_system)))
+            var markets = (await _writer.GetAsync(ExternalMarketSettingsNoSql.GeneratePartitionKey(B2C2Const.Name)))
                 .ToList().Select(e => new ExternalMarketSettings()
                 {
                     Market = e.Settings.Market,

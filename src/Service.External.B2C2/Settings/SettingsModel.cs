@@ -13,12 +13,13 @@ namespace Service.External.B2C2.Settings
 
         [YamlProperty("ExternalB2C2.ElkLogs")] public LogElkSettings ElkLogs { get; set; }
 
-        [YamlProperty("ExternalB2C2.Name")] public string Name { get; set; }
+        [YamlProperty("ExternalB2C2.MyNoSqlWriterUrl")]
+        public string MyNoSqlWriterUrl { get; set; }
 
         [YamlProperty("ExternalB2C2.ApiToken")]
         public string ApiToken { get; set; }
 
-        [YamlProperty("ExternalB2C2.MyNoSqlWriterUrl")]
-        public string MyNoSqlWriterUrl { get; set; }
+        [YamlProperty("ExternalB2C2.RefreshBalanceIntervalSec")]
+        public int RefreshBalanceIntervalSec { get; set; }
     }
 }

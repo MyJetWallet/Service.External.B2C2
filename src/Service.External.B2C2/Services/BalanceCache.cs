@@ -1,29 +1,27 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using Autofac;
 using Microsoft.Extensions.Logging;
 using MyJetWallet.Connector.B2C2.Rest;
-using MyJetWallet.Domain.ExternalMarketApi.Dto;
 using MyJetWallet.Domain.ExternalMarketApi.Models;
 using MyJetWallet.Sdk.Service;
+using MyJetWallet.Sdk.Service.Tools;
 using Service.External.B2C2.Domain.Settings;
 
 namespace Service.External.B2C2.Services
 {
-    public class BalanceCache : IStartable
+    public class BalanceCache : IStartable, IDisposable
     {
         private readonly ILogger<BalanceCache> _logger;
         private readonly B2C2RestApi _restApi;
         private readonly OrderBookManager _orderBookManager;
         private readonly IExternalMarketSettingsAccessor _externalMarketSettingsAccessor;
-        private readonly SemaphoreSlim _slim = new SemaphoreSlim(1);
-        private DateTime _lastUpdate = DateTime.MinValue;
 
-        private GetBalancesResponse _response;
+        private Dictionary<string, ExchangeBalance> _balances = new();
 
+        private readonly MyTaskTimer _timer;
 
         public BalanceCache(B2C2RestApi restApi, OrderBookManager orderBookManager,
             IExternalMarketSettingsAccessor externalMarketSettingsAccessor, ILogger<BalanceCache> logger)
@@ -32,29 +30,33 @@ namespace Service.External.B2C2.Services
             _orderBookManager = orderBookManager;
             _externalMarketSettingsAccessor = externalMarketSettingsAccessor;
             _logger = logger;
+
+            _timer = new MyTaskTimer(nameof(BalanceCache), TimeSpan.FromSeconds(1), logger, DoTimer);
         }
 
-        public void Start()
+        private async Task DoTimer()
         {
-            RefreshBalancesAsync().GetAwaiter().GetResult();
-        }
+            _timer.ChangeInterval(
+                TimeSpan.FromSeconds(Program.ReloadedSettings(e => e.RefreshBalanceIntervalSec).Invoke()));
 
-        public async Task<GetBalancesResponse> GetBalancesAsync()
-        {
-            await _slim.WaitAsync();
+            using var activity = MyTelemetry.StartActivity("Refresh balance data");
             try
             {
-                if (_response == null || (DateTime.UtcNow - _lastUpdate).TotalSeconds > 1) await RefreshBalancesAsync();
-
-                return _response;
+                await RefreshData();
             }
-            finally
+            catch (Exception ex)
             {
-                _slim.Release();
+                _logger.LogError(ex, "Error on refresh balance");
+                ex.FailActivity();
             }
         }
 
-        private async Task<GetBalancesResponse> RefreshBalancesAsync()
+        public List<ExchangeBalance> GetBalances()
+        {
+            return _balances.Values.ToList();
+        }
+
+        private async Task RefreshData()
         {
             using var activity = MyTelemetry.StartActivity("Load balance info");
 
@@ -71,10 +73,18 @@ namespace Service.External.B2C2.Services
 
             if (data.Success)
             {
-                var balances = new List<ExchangeBalance>();
+                var dict = new Dictionary<string, ExchangeBalance>();
                 foreach (var balance in data.Result.balances)
                 {
-                    if (balance.Key != "USD")
+                    if (balance.Key == "USD")
+                    {
+                        dict[balance.Key] = new ExchangeBalance()
+                        {
+                            Symbol = balance.Key, Balance = decimal.Parse(balance.Value),
+                            Free = Convert.ToDecimal(availableRisk)
+                        };
+                    }
+                    else
                     {
                         var symbol = $"{balance.Key}USD.SPOT";
                         var orderBook = _orderBookManager.GetOrderBook(symbol);
@@ -87,38 +97,33 @@ namespace Service.External.B2C2.Services
                         var freeBalance = (currentBalance > 0)
                             ? availableBalance + currentBalance
                             : availableBalance;
-                        balances.Add(new ExchangeBalance()
+                        dict[balance.Key] = new ExchangeBalance()
                         {
                             Symbol = balance.Key, Balance = currentBalance,
                             Free = Math.Round(freeBalance, instrument.VolumeAccuracy, MidpointRounding.ToZero)
-                        });
-                    }
-                    else
-                    {
-                        balances.Add(new ExchangeBalance()
-                        {
-                            Symbol = balance.Key, Balance = decimal.Parse(balance.Value),
-                            Free = Convert.ToDecimal(availableRisk)
-                        });
+                        };
                     }
                 }
 
-                _response = new GetBalancesResponse()
-                {
-                    Balances = balances,
-                };
-                _lastUpdate = DateTime.UtcNow;
+                _balances = dict;
+
+                _logger.LogDebug("Balance refreshed");
             }
             else
             {
                 throw new Exception($"Cannot get balance, error: {data.Error}");
             }
+        }
 
-            _response.AddToActivityAsJsonTag("balance");
+        public void Start()
+        {
+            _timer.Start();
+        }
 
-            _logger.LogDebug("Balance refreshed");
-
-            return _response;
+        public void Dispose()
+        {
+            _timer?.Stop();
+            _timer?.Dispose();
         }
     }
 }
