@@ -52,6 +52,17 @@ jobs:
           tag_with_ref: true
           build_args: app_version=myjetwallet.service.external.b2c2:${{ steps.extract_branch.outputs.branch }},app_compilation_date=${{ steps.current-time.outputs.formattedTime }}
 
+      - name: Publish image ST
+        uses: docker/build-push-action@v1
+        with:
+          username: ${{ secrets.ST_DOCKER_USER }}
+          password: ${{ secrets.ST_DOCKER_PASSWORD }}
+          path: ./publish-api
+          registry: simpletrading.azurecr.io
+          repository: spot/myjetwallet.service.external.b2c2
+          tag_with_ref: true
+          build_args: app_version=myjetwallet.service.external.b2c2:${{ steps.extract_branch.outputs.branch }},app_compilation_date=${{ steps.current-time.outputs.formattedTime }}
+
   update_version:
     needs: build
     runs-on: ubuntu-latest

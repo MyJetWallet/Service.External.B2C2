@@ -48,6 +48,18 @@ jobs:
           tags: latest
           build_args: app_version=myjetwallet.service.external.b2c2-test:latest,app_compilation_date=${{ steps.current-time.outputs.formattedTime }}
 
+      - name: Publish image ST
+        uses: docker/build-push-action@v1
+        with:
+          username: ${{ secrets.ST_DOCKER_USER }}
+          password: ${{ secrets.ST_DOCKER_PASSWORD }}
+          path: ./publish-api
+          registry: simpletrading.azurecr.io
+          repository: spot/myjetwallet.service.external.b2c2-test
+          tags: latest
+          add_git_labels: true
+          build_args: app_version=myjetwallet.service.external.b2c2-test:latest,app_compilation_date=${{ steps.current-time.outputs.formattedTime }}
+
   restart:
     runs-on: ubuntu-latest
     needs: build
@@ -57,6 +69,6 @@ jobs:
         env:
           KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA__ST_TEST }}
           NAMESPACE: ${{ secrets.KUBE_TEST_NAMESPACE }}
-          POD: external.b2c2
+          POD: external-b2c2
 
 
