@@ -1,8 +1,9 @@
 ﻿using System.Threading.Tasks;
-using Service.External.B2C2.Domain.Models.Settings;
-using Service.External.B2C2.Domain.Settings;
-using Service.External.B2C2.Grpc;
-using Service.External.B2C2.Grpc.Models;
+using MyJetWallet.Sdk.ExternalMarketsSettings.Grpc;
+using MyJetWallet.Sdk.ExternalMarketsSettings.Grpc.Models;
+using MyJetWallet.Sdk.ExternalMarketsSettings.Models;
+using MyJetWallet.Sdk.ExternalMarketsSettings.Settings;
+using Service.External.B2C2.Services;
 
 namespace Service.External.B2C2.GrpcServices
 {
@@ -10,12 +11,14 @@ namespace Service.External.B2C2.GrpcServices
     {
         private readonly IExternalMarketSettingsAccessor _accessor;
         private readonly IExternalMarketSettingsManager _manager;
+        private readonly OrderBookManager _orderBookManager;
 
         public ExternalMarketSettingsManagerGrpc(IExternalMarketSettingsAccessor accessor,
-            IExternalMarketSettingsManager manager)
+            IExternalMarketSettingsManager manager, OrderBookManager orderBookManager)
         {
             _accessor = accessor;
             _manager = manager;
+            _orderBookManager = orderBookManager;
         }
 
         public Task GetExternalMarketSettings(GetMarketRequest request)
@@ -30,17 +33,20 @@ namespace Service.External.B2C2.GrpcServices
 
         public Task AddExternalMarketSettings(ExternalMarketSettings settings)
         {
-            return _manager.AddExternalMarketSettings(settings);
+            _manager.AddExternalMarketSettings(settings);
+            return _orderBookManager.Subscribe(settings.Market, settings.GetDoubleLevels());
         }
 
         public Task UpdateExternalMarketSettings(ExternalMarketSettings settings)
         {
-            return _manager.UpdateExternalMarketSettings(settings);
+            _manager.UpdateExternalMarketSettings(settings);
+            return _orderBookManager.Resubscribe(settings.Market, settings.GetDoubleLevels());
         }
 
         public Task RemoveExternalMarketSettings(RemoveMarketRequest request)
         {
-            return _manager.RemoveExternalMarketSettings(request.Symbol);
+            _manager.RemoveExternalMarketSettings(request.Symbol);
+            return _orderBookManager.Unsubscribe(request.Symbol);
         }
     }
 }

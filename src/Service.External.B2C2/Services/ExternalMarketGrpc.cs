@@ -9,9 +9,9 @@ using MyJetWallet.Domain.ExternalMarketApi;
 using MyJetWallet.Domain.ExternalMarketApi.Dto;
 using MyJetWallet.Domain.ExternalMarketApi.Models;
 using MyJetWallet.Domain.Orders;
+using MyJetWallet.Sdk.ExternalMarketsSettings.Settings;
 using MyJetWallet.Sdk.Service;
 using Newtonsoft.Json;
-using Service.External.B2C2.Domain.Settings;
 
 // ReSharper disable InconsistentLogPropertyNaming
 

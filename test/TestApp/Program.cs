@@ -5,10 +5,9 @@ using Grpc.Core.Interceptors;
 using Grpc.Net.Client;
 using MyJetWallet.Domain.ExternalMarketApi;
 using MyJetWallet.Domain.ExternalMarketApi.Dto;
+using MyJetWallet.Sdk.ExternalMarketsSettings.Autofac;
 using MyJetWallet.Sdk.GrpcMetrics;
 using ProtoBuf.Grpc.Client;
-using Service.External.B2C2.Client;
-using Service.External.B2C2.Domain.Models.Settings;
 
 namespace TestApp
 {
@@ -21,23 +20,25 @@ namespace TestApp
 
         private static async Task TestSettings()
         {
-            var factory = new ExternalB2C2ClientFactory("http://localhost:99");
+            var factory = new ExternalMarketSettingsClientFactory("http://localhost:99");
             var client = factory.GetMarketMakerSettingsManagerGrpc();
 
             Console.WriteLine(JsonSerializer.Serialize(await client.GetExternalMarketSettingsList(),
                 new JsonSerializerOptions {WriteIndented = true}));
 
-            await client.AddExternalMarketSettings(new ExternalMarketSettings()
-            {
-                Market = "BTCUST.SPOT",
-                BaseAsset = "BTC",
-                QuoteAsset = "USD",
-                MinVolume = 0.0001,
-                PriceAccuracy = 4,
-                VolumeAccuracy = 8,
-                Active = true,
-                Levels = "1;3"
-            });
+            // await client.UpdateExternalMarketSettings(new ExternalMarketSettings()
+            // {
+            //     Market = "XLMUSD.SPOT",
+            //     BaseAsset = "XLM",
+            //     QuoteAsset = "USD",
+            //     MinVolume = 0.01,
+            //     PriceAccuracy = 5,
+            //     VolumeAccuracy = 8,
+            //     Active = true,
+            //     Levels = "100;3000"
+            // });
+
+            // await client.RemoveExternalMarketSettings(new RemoveMarketRequest() {Symbol = "BTCUST.SPOT"});
 
             Console.WriteLine(JsonSerializer.Serialize(await client.GetExternalMarketSettingsList(),
                 new JsonSerializerOptions {WriteIndented = true}));

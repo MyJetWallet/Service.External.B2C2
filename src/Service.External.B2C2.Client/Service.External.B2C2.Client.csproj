@@ -5,11 +5,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference PrivateAssets="All" Include="..\Service.External.B2C2.Domain.Models\Service.External.B2C2.Domain.Models.csproj" />
-        <ProjectReference PrivateAssets="All" Include="..\Service.External.B2C2.Grpc\Service.External.B2C2.Grpc.csproj" />
-    </ItemGroup>
-
-    <ItemGroup>
         <PackageReference Include="Autofac" Version="6.2.0" />
         <PackageReference Include="Grpc.Core.Api" Version="2.38.1" />
         <PackageReference Include="JetBrains.Annotations" Version="2021.1.0" />
@@ -31,11 +26,4 @@
         <PackageProjectUrl>https://github.com/MyJetWallet/Service.External.B2C2</PackageProjectUrl>
         <RepositoryUrl>https://github.com/MyJetWallet/Service.External.B2C2</RepositoryUrl>
     </PropertyGroup>
-
-    <Target Name="PackReferencedProjectOutputs" DependsOnTargets="BuildOnlySettings;ResolveReferences">
-        <ItemGroup>
-            <BuildOutputInPackage Include="@(ReferenceCopyLocalPaths-&gt;WithMetadataValue('ReferenceSourceTarget', 'ProjectReference'))" />
-        </ItemGroup>
-    </Target>
-
 </Project>

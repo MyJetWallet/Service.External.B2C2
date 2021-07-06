@@ -1,8 +1,10 @@
 ﻿using Autofac;
 using MyJetWallet.Connector.B2C2.Rest;
+using MyJetWallet.Sdk.ExternalMarketsSettings.NoSql;
+using MyJetWallet.Sdk.ExternalMarketsSettings.Services;
+using MyJetWallet.Sdk.ExternalMarketsSettings.Settings;
 using MyNoSqlServer.Abstractions;
-using Service.External.B2C2.Domain.NoSql;
-using Service.External.B2C2.Domain.Settings;
+using MyNoSqlServer.DataWriter;
 using Service.External.B2C2.Services;
 
 namespace Service.External.B2C2.Modules
@@ -19,6 +21,7 @@ namespace Service.External.B2C2.Modules
 
             builder
                 .RegisterType<ExternalMarketSettingsManager>()
+                .WithParameter("name", B2C2Const.Name)
                 .As<IExternalMarketSettingsManager>()
                 .As<IExternalMarketSettingsAccessor>()
                 .AsSelf()
@@ -32,7 +35,7 @@ namespace Service.External.B2C2.Modules
             where TEntity : IMyNoSqlDbEntity, new()
         {
             builder.Register(ctx =>
-                    new MyNoSqlServer.DataWriter.MyNoSqlServerDataWriter<TEntity>(
+                    new MyNoSqlServerDataWriter<TEntity>(
                         Program.ReloadedSettings(e => e.MyNoSqlWriterUrl), table, true))
                 .As<IMyNoSqlServerDataWriter<TEntity>>()
                 .SingleInstance();

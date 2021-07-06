@@ -6,9 +6,9 @@ using Autofac;
 using Microsoft.Extensions.Logging;
 using MyJetWallet.Connector.B2C2.Rest;
 using MyJetWallet.Domain.ExternalMarketApi.Models;
+using MyJetWallet.Sdk.ExternalMarketsSettings.Settings;
 using MyJetWallet.Sdk.Service;
 using MyJetWallet.Sdk.Service.Tools;
-using Service.External.B2C2.Domain.Settings;
 
 namespace Service.External.B2C2.Services
 {

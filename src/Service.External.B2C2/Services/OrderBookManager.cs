@@ -6,7 +6,7 @@ using Microsoft.Extensions.Logging;
 using MyJetWallet.Connector.B2C2.WebSocket;
 using MyJetWallet.Connector.B2C2.WebSocket.Models;
 using MyJetWallet.Domain.ExternalMarketApi.Models;
-using Service.External.B2C2.Domain.Settings;
+using MyJetWallet.Sdk.ExternalMarketsSettings.Settings;
 
 namespace Service.External.B2C2.Services
 {
@@ -46,6 +46,16 @@ namespace Service.External.B2C2.Services
         public async Task Resubscribe(string symbol, double[] levels)
         {
             await _wsB2C2.Reset(symbol, levels);
+        }
+
+        public async Task Subscribe(string symbol, double[] levels)
+        {
+            await _wsB2C2.Subscribe(symbol, levels);
+        }
+
+        public async Task Unsubscribe(string symbol)
+        {
+            await _wsB2C2.Unsubscribe(symbol);
         }
 
         public LeOrderBook GetOrderBook(string symbol)
