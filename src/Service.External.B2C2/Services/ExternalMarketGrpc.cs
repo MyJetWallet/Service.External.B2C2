@@ -103,7 +103,7 @@ namespace Service.External.B2C2.Services
         {
             try
             {
-                using var action = MyTelemetry.StartActivity("Bitgo Market Trade");
+                using var action = MyTelemetry.StartActivity("B2C2 Market Trade");
                 request.AddToActivityAsJsonTag("request");
 
                 var refId = request.ReferenceId ?? Guid.NewGuid().ToString("N");
@@ -121,7 +121,7 @@ namespace Service.External.B2C2.Services
                 if (!resp.Success)
                 {
                     throw new Exception(
-                        $"Cannot place marketOrder. Error: {resp.Error}. Request: {JsonConvert.SerializeObject(request)}. Reference: {refId}");
+                        $"Cannot place marketOrder. Error: {JsonConvert.SerializeObject(resp)}. Request: {JsonConvert.SerializeObject(request)}. Reference: {refId}");
                 }
 
                 return ConvertB2C2OrderToExchangeTrade(resp.Result);
