@@ -33,12 +33,12 @@ namespace Service.External.B2C2.Services
             _externalMarketSettingsAccessor = externalMarketSettingsAccessor;
         }
 
-        public Task<GetNameResult> GetNameAsync()
+        public Task<GetNameResult> GetNameAsync(GetNameRequest request)
         {
             return Task.FromResult(new GetNameResult {Name = B2C2Const.Name});
         }
 
-        public Task<GetBalancesResponse> GetBalancesAsync()
+        public Task<GetBalancesResponse> GetBalancesAsync(GetBalancesRequest request)
         {
             var list = _balanceCache.GetBalances();
             return Task.FromResult(new GetBalancesResponse {Balances = list});
@@ -74,7 +74,7 @@ namespace Service.External.B2C2.Services
             }
         }
 
-        public Task<GetMarketInfoListResponse> GetMarketInfoListAsync()
+        public Task<GetMarketInfoListResponse> GetMarketInfoListAsync(GetMarketInfoListRequest request)
         {
             try
             {

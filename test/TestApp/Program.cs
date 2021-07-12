@@ -64,7 +64,7 @@ namespace TestApp
             Console.WriteLine("***********************************************");
 
             var externalMarketClient = _channel.CreateGrpcService<IExternalMarket>();
-            Console.WriteLine(JsonSerializer.Serialize(await externalMarketClient.GetBalancesAsync(),
+            Console.WriteLine(JsonSerializer.Serialize(await externalMarketClient.GetBalancesAsync(null),
                 new JsonSerializerOptions {WriteIndented = true}));
 
             Console.WriteLine("***********************************************");
