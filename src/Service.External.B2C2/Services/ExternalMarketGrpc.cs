@@ -146,7 +146,7 @@ namespace Service.External.B2C2.Services
                 Price = !string.IsNullOrEmpty(order.ExecutedPrice) ? double.Parse(order.ExecutedPrice) : 0,
                 ReferenceId = order.ClientOrderId,
                 Source = B2C2Const.Name,
-                Volume = (double) size,
+                Volume = order.Side == "buy" ? (double) size : (double) -size,
                 Timestamp = DateTime.Parse(order.Created)
             };
         }
