@@ -91,7 +91,10 @@ namespace Service.External.B2C2.Services
                         QuoteAsset = e.QuoteAsset,
                         MinVolume = e.MinVolume,
                         PriceAccuracy = e.PriceAccuracy,
-                        VolumeAccuracy = e.VolumeAccuracy
+                        VolumeAccuracy = e.VolumeAccuracy,
+                        AssociateInstrument = e.AssociateInstrument,
+                        AssociateBaseAsset = e.AssociateBaseAsset,
+                        AssociateQuoteAsset = e.AssociateQuoteAsset
                     }).ToList()
                 }.AsTask();
             }
