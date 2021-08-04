@@ -13,12 +13,12 @@ namespace Service.External.B2C2.Services
             _manager = manager;
         }
 
-        public Task<GetNameResult> GetNameAsync()
+        public Task<GetNameResult> GetNameAsync(GetOrderBookNameRequest request)
         {
             return Task.FromResult(new GetNameResult {Name = B2C2Const.Name});
         }
 
-        public Task<GetSymbolResponse> GetSymbolsAsync()
+        public Task<GetSymbolResponse> GetSymbolsAsync(GetSymbolsRequest request)
         {
             return Task.FromResult(new GetSymbolResponse {Symbols = _manager.GetSymbols()});
         }
