@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
     <PropertyGroup>
-        <TargetFramework>net5.0</TargetFramework>
+        <TargetFramework>net6.0</TargetFramework>
         <UserSecretsId>aa296012-2b2e-46f8-bab5-63074ccc8c27</UserSecretsId>
         <LangVersion>9.0</LangVersion>
     </PropertyGroup>
@@ -13,11 +13,11 @@
         <PackageReference Include="Microsoft.Extensions.Configuration" Version="6.0.1" />
         <PackageReference Include="Microsoft.Extensions.Logging" Version="6.0.0" />
         <PackageReference Include="MyJetWallet.Connector.B2C2" Version="1.0.3" />
-        <PackageReference Include="MyJetWallet.Domain.ExternalMarketApi" Version="1.1.6" />
+        <PackageReference Include="MyJetWallet.Domain.ExternalMarketApi" Version="1.4.2" />
         <PackageReference Include="MyJetWallet.Sdk.ExternalMarketsSettings" Version="1.0.4" />
-        <PackageReference Include="MyJetWallet.Sdk.GrpcMetrics" Version="2.0.3" />
+        <PackageReference Include="MyJetWallet.Sdk.GrpcMetrics" Version="2.0.4" />
         <PackageReference Include="MyJetWallet.Sdk.GrpcSchema" Version="1.0.6" />
-        <PackageReference Include="MyJetWallet.Sdk.Service" Version="1.6.11" />
+        <PackageReference Include="MyJetWallet.Sdk.Service" Version="2.2.3" />
         <PackageReference Include="MyNoSqlServer.DataReader" Version="1.8.1" />
         <PackageReference Include="MyNoSqlServer.DataWriter" Version="1.8.1" />
         <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />

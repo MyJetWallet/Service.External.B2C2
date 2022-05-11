@@ -140,6 +140,16 @@ namespace Service.External.B2C2.Services
             }
         }
 
+        public Task<GetTradesResponse> GetTradesAsync(GetTradesRequest request)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<ExchangeTrade> MakeLimitTradeAsync(MakeLimitTradeRequest request)
+        {
+            throw new NotImplementedException();
+        }
+
         private ExchangeTrade ConvertB2C2OrderToExchangeTrade(Order order)
         {
             var size = !string.IsNullOrEmpty(order.Quantity) ? decimal.Parse(order.Quantity) : 0;

@@ -2,14 +2,14 @@
 
     <PropertyGroup>
         <OutputType>Exe</OutputType>
-        <TargetFramework>net5.0</TargetFramework>
+        <TargetFramework>net6.0</TargetFramework>
     </PropertyGroup>
 
     <ItemGroup>
         <PackageReference Include="Grpc.Core.Api" Version="2.45.0" />
         <PackageReference Include="Grpc.Net.Client" Version="2.45.0" />
-        <PackageReference Include="MyJetWallet.Domain.ExternalMarketApi" Version="1.1.6" />
-        <PackageReference Include="MyJetWallet.Sdk.GrpcMetrics" Version="2.0.3" />
+        <PackageReference Include="MyJetWallet.Domain.ExternalMarketApi" Version="1.4.2" />
+        <PackageReference Include="MyJetWallet.Sdk.GrpcMetrics" Version="2.0.4" />
         <PackageReference Include="MyJetWallet.Sdk.ExternalMarketsSettings" Version="1.0.4" />
         <PackageReference Include="protobuf-net.Grpc" Version="1.0.152" />
     </ItemGroup>
