@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/dotnet/aspnet:6.0.0-bullseye-slims
+FROM mcr.microsoft.com/dotnet/aspnet:6.0.0-bullseye-slim
 WORKDIR /app
 COPY . .
 ARG app_compilation_date
